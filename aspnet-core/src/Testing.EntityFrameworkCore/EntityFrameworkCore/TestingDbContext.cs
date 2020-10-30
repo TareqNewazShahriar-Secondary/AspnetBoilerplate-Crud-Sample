@@ -16,6 +16,6 @@ namespace Testing.EntityFrameworkCore
         {
         }
 
-        //public DbSet<Team> Teams { get; set; }
+        public DbSet<Team> Teams { get; set; }
     }
 }

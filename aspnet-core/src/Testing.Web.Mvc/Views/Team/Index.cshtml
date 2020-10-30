@@ -1,0 +1,23 @@
+﻿@using Testing.Web.Startup
+@{ ViewBag.Title = L("Team");
+                ViewBag.CurrentPageName = PageNames.Teams; }
+@section scripts
+{
+    <environment names="Development">
+        <script src="~/view-resources/Views/Teams/index.js" asp-append-version="true"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/view-resources/Views/Teams/Index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<a asp-controller="Team" asp-action="Create">Add Team</a>
+
+<table id="TeamsTable">
+    <thead>
+        <tr>
+            <th>Name</th>
+        </tr>
+    </thead>
+</table>
