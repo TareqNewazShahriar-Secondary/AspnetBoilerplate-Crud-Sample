@@ -11,7 +11,7 @@ using Testing.Teams.Dto;
 
 namespace Testing.Teams
 {
-    [AbpAuthorize(PermissionNames.Pages_Users)]
+    [AbpAuthorize(PermissionNames.Pages_Users)] // TODO: PermissionNames.Pages_Users used, because not sure what is it and how it needs to be created
     public class TeamService :
         AsyncCrudAppService<Team, TeamDto, int, PagedTeamResultRequestDto, CreateTeamDto, TeamDto>,
         ITeamService

@@ -1,6 +1,8 @@
 ﻿@using Testing.Web.Startup
-@{ ViewBag.Title = L("Team");
-                ViewBag.CurrentPageName = PageNames.Teams; }
+@{
+    ViewBag.Title = L("Team");
+    ViewBag.CurrentPageName = PageNames.Teams; 
+}
 @section scripts
 {
     <environment names="Development">
@@ -14,10 +16,17 @@
 
 <a asp-controller="Team" asp-action="Create">Add Team</a>
 
-<table id="TeamsTable">
-    <thead>
-        <tr>
-            <th>Name</th>
-        </tr>
-    </thead>
-</table>
+<div class="card-body">
+    <div class="table-responsive">
+        <table id="TeamsTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>@L("Name")</th>
+                    <th style="width: 150px">@L("Actions")</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
