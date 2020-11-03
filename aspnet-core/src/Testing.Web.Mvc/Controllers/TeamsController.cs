@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using Testing.Controllers;
 using Testing.Teams;
 using Testing.Teams.Dto;
-using Testing.Web.Models.Team;
+using Testing.Web.Models.Teams;
 
 namespace Testing.Web.Controllers
 {
-    public class TeamController : TestingControllerBase
+    public class TeamsController : TestingControllerBase
     {
         private readonly ITeamService _teamService;
 
-        public TeamController(ITeamService teamService)
+        public TeamsController(ITeamService teamService)
         {
             _teamService = teamService;
         }

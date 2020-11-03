@@ -1,17 +1,9 @@
 ﻿@using Testing.Web.Startup
-@{
-    ViewBag.Title = L("Team");
-    ViewBag.CurrentPageName = PageNames.Teams; 
-}
+@{ ViewBag.Title = L("Team");
+                ViewBag.CurrentPageName = PageNames.Teams; }
 @section scripts
 {
-    <environment names="Development">
-        <script src="~/view-resources/Views/Teams/index.js" asp-append-version="true"></script>
-    </environment>
-
-    <environment names="Staging,Production">
-        <script src="~/view-resources/Views/Teams/Index.min.js" asp-append-version="true"></script>
-    </environment>
+    <script src="~/view-resources/Views/Teams/index.js" asp-append-version="true"></script>
 }
 
 <a asp-controller="Team" asp-action="Create">Add Team</a>
@@ -30,3 +22,5 @@
         </table>
     </div>
 </div>
+
+@await Html.PartialAsync("~/Views/Teams/_CreateModal.cshtml")

@@ -8,6 +8,6 @@
 
         public const string Pages_Roles = "Pages.Roles";
 
-        // public const string Pages_Teams = "Pages.Teams";
+        public const string Pages_Teams = "Pages.Teams";
     }
 }

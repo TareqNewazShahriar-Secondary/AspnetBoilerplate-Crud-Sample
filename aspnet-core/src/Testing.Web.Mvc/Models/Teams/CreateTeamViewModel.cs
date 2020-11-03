@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Testing.Web.Models.Team
+namespace Testing.Web.Models.Teams
 {
     public class CreateTeamViewModel
     {
