@@ -2,10 +2,10 @@
     var _teamService = abp.services.app.teamService,
         l = abp.localization.getSource('Testing'),
         _$table = $('#TeamsTable'),
-        _$modal = $('#UserCreateModal'),
+        _$modal = $('#TeamCreateModal'),
         _$form = _$modal.find('form');
 
-    var _$teamTable = _$table.DataTable({
+    var _$teamsTable = _$table.DataTable({
         paging: true,
         serverSide: true,
         columnDefs: [
@@ -27,10 +27,10 @@
                 defaultContent: '',
                 render: (data, type, row, meta) => {
                     return [
-                        `   <button type="button" class="btn btn-sm bg-secondary edit-user" data-user-id="${row.id}" data-toggle="modal" data-target="#UserEditModal">`,
+                        `   <button type="button" class="btn btn-sm bg-secondary edit-team" data-team-id="${row.id}" data-toggle="modal" data-target="#TeamEditModal">`,
                         `       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
                         '   </button>',
-                        `   <button type="button" class="btn btn-sm bg-danger delete-user" data-user-id="${row.id}" data-user-name="${row.name}">`,
+                        `   <button type="button" class="btn btn-sm bg-danger delete-team" data-team-id="${row.id}" data-team-name="${row.name}">`,
                         `       <i class="fas fa-trash"></i> ${l('Delete')}`,
                         '   </button>'
                     ].join('');
@@ -38,7 +38,7 @@
             }
         ],
         ajax: function (data, callback, settings) {
-            //var filter = $('#UsersSearchForm').serializeFormToObject(true);
+            //var filter = $('#TeamsSearchForm').serializeFormToObject(true);
             //filter.maxResultCount = data.length;
             //filter.skipCount = data.start;
 
@@ -58,7 +58,7 @@
             {
                 name: 'refresh',
                 text: '<i class="fas fa-redo-alt"></i>',
-                action: () => _$teamTable.draw(false)
+                action: () => _$teamsTable.draw(false)
             }
         ],
         responsive: {
@@ -84,56 +84,56 @@
             return;
         }
 
-        var user = _$form.serializeFormToObject();
-        user.roleNames = [];
+        var team = _$form.serializeFormToObject();
+        team.roleNames = [];
         var _$roleCheckboxes = _$form[0].querySelectorAll("input[name='role']:checked");
         if (_$roleCheckboxes) {
             for (var roleIndex = 0; roleIndex < _$roleCheckboxes.length; roleIndex++) {
                 var _$roleCheckbox = $(_$roleCheckboxes[roleIndex]);
-                user.roleNames.push(_$roleCheckbox.val());
+                team.roleNames.push(_$roleCheckbox.val());
             }
         }
 
         abp.ui.setBusy(_$modal);
-        _userService.create(user).done(function () {
+        _teamService.create(team).done(function () {
             _$modal.modal('hide');
             _$form[0].reset();
             abp.notify.info(l('SavedSuccessfully'));
-            _$usersTable.ajax.reload();
+            _$teamsTable.ajax.reload();
         }).always(function () {
             abp.ui.clearBusy(_$modal);
         });
     });
 
-    $(document).on('click', '.delete-user', function () {
-        var userId = $(this).attr("data-user-id");
-        var userName = $(this).attr('data-user-name');
+    $(document).on('click', '.delete-team', function () {
+        var teamId = $(this).attr("data-team-id");
+        var teamName = $(this).attr('data-team-name');
 
-        deleteUser(userId, userName);
+        deleteTeam(teamId, teamName);
     });
 
-    function deleteUser(userId, userName) {
+    function deleteTeam(teamId, teamName) {
         abp.message.confirm(
             abp.utils.formatString(
                 l('AreYouSureWantToDelete'),
-                userName),
+                teamName),
             null,
             (isConfirmed) => {
                 if (isConfirmed) {
-                    _userService.delete({
-                        id: userId
+                    _teamService.delete({
+                        id: teamId
                     }).done(() => {
                         abp.notify.info(l('SuccessfullyDeleted'));
-                        _$usersTable.ajax.reload();
+                        _$teamsTable.ajax.reload();
                     });
                 }
             }
         );
     }
 
-    $(document).on('click', 'a[data-target="#UserCreateModal"]', (e) => {
-        $('.nav-tabs a[href="#user-details"]').tab('show')
-    });
+    //$(document).on('click', 'a[data-target="#TeamCreateModal"]', (e) => {
+    //    $('.nav-tabs a[href="#team-details"]').tab('show')
+    //});
     
     _$modal.on('shown.bs.modal', () => {
         _$modal.find('input:not([type=hidden]):first').focus();

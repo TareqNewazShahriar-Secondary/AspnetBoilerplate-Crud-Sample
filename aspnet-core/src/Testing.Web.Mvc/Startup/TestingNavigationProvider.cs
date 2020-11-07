@@ -48,6 +48,15 @@ namespace Testing.Web.Startup
                 )
                 .AddItem(
                     new MenuItemDefinition(
+                        PageNames.Teams,
+                        L("Teams"),
+                        url: "Teams",
+                        icon: "fas fa-theater-masks"
+                        //permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Teams)
+                    )
+                )
+                .AddItem(
+                    new MenuItemDefinition(
                         PageNames.About,
                         L("About"),
                         url: "About",
