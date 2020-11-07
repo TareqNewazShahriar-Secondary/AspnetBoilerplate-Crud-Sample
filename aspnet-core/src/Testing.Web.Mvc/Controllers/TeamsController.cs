@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Abp.Application.Services.Dto;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,24 +25,14 @@ namespace Testing.Web.Controllers
             return View();
         }
 
-        public IActionResult Create()
+        public async Task<ActionResult> EditModal(int teamId)
         {
-            return View();
-        }
-
-        public async Task<IActionResult> Creating(CreateTeamViewModel model)
-        {
-            if (ModelState.IsValid)
+            var team = await _teamService.GetAsync(new EntityDto<int>(teamId));
+            var model = new EditTeamModalViewModel
             {
-                var createTeamDto = new CreateTeamDto { Name = model.Name };
-                await _teamService.CreateAsync(createTeamDto);
-
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                return View();
-            }
+                Team = team
+            };
+            return PartialView("_EditModal", model);
         }
     }
 }

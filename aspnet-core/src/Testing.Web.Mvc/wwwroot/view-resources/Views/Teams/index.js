@@ -131,9 +131,28 @@
         );
     }
 
+    $(document).on('click', '.edit-team', function (e) {
+        var teamId = $(this).attr("data-team-id");
+
+        e.preventDefault();
+        abp.ajax({
+            url: abp.appPath + 'Teams/EditModal?teamId=' + teamId,
+            type: 'POST',
+            dataType: 'html',
+            success: function (content) {
+                $('#TeamEditModal div.modal-content').html(content);
+            },
+            error: function (e) { console.error('on team edit', e); }
+        });
+    });
+
     //$(document).on('click', 'a[data-target="#TeamCreateModal"]', (e) => {
     //    $('.nav-tabs a[href="#team-details"]').tab('show')
     //});
+
+    abp.event.on('team.edited', (data) => {
+        _$teamsTable.ajax.reload();
+    });
     
     _$modal.on('shown.bs.modal', () => {
         _$modal.find('input:not([type=hidden]):first').focus();

@@ -1,6 +1,6 @@
 ﻿@using Testing.Web.Startup
 @{ ViewBag.Title = L("Team");
-                ViewBag.CurrentPageName = PageNames.Teams; }
+    ViewBag.CurrentPageName = PageNames.Teams; }
 @section scripts
 {
     <script src="~/view-resources/Views/Teams/index.js" asp-append-version="true"></script>
@@ -37,3 +37,10 @@
 </div>
 
 @await Html.PartialAsync("~/Views/Teams/_CreateModal.cshtml")
+
+<div class="modal fade" id="TeamEditModal" tabindex="-1" role="dialog" aria-labelledby="TeamEditModalLabel" data-backdrop="static">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+        </div>
+    </div>
+</div>
