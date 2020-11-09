@@ -1,27 +1,26 @@
 ﻿@model List<Testing.Teams.Dto.TeamDto>
 @{ Layout = null; }
+<div data-printing>
+    <h3>Teams</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+            </tr>
+        }
+    </table>
 
-<h3>Teams</h3>
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-        </tr>
-    </thead>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@item.Id</td>
-            <td>@item.Name</td>
-        </tr>
-    }
-</table>
-
+</div>
 <style type="text/css">
-    @@media print {
-       * {
-           color: blue;
-       }
+    [data-printing] * {
+        color: blue;
     }
 </style>
