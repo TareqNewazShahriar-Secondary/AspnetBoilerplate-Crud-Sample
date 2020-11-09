@@ -3,8 +3,8 @@
 @using Testing.Web.Models.Teams
 @model EditTeamModalViewModel
 @{ Layout = null; }
-@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditTeam")))
 
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditTeam")))
 <form name="TeamEditForm" role="form" class="form-horizontal">
     <input type="hidden" name="Id" value="@Model.Team.Id" />
     <div class="modal-body">

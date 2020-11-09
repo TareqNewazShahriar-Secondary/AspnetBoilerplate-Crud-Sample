@@ -7,6 +7,9 @@ namespace Testing.Web.Views.Shared.Components.Printing
 {
     public class PrintingViewModel
     {
-        public string PartialPath { get; set; }
+        public string Controller { get; set; }
+        public string Action { get; set; }
+        public dynamic ActionParam { get; set; }
+        public string PrintButtonText { get; set; }
     }
 }
