@@ -45,10 +45,4 @@
     </div>
 </div>
 
-@await Html.PartialAsync("~/Views/Shared/Modals/_Printing.cshtml", 
-    new Testing.Web.Views.Shared.Components.Printing.PrintingViewModel { 
-        Controller = "Teams",
-        Action = "PrintList",
-        PrintButtonText = "Print Team List"
-    }
-)
+<vc:printing controller="Teams" action="PrintList" print-button-text="Print Team List"></vc:printing>
