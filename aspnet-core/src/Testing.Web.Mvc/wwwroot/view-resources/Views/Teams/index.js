@@ -47,7 +47,7 @@
             _teamService.getAll(filter).done(function (result) {
                 callback({
                     recordsTotal: result.totalCount,
-                    recordsFiltered: result.totalCount,
+                    recordsFiltered: result.items.length,
                     data: result.items
                 });
             }).always(function () {
