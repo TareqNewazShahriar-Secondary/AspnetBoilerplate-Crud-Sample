@@ -68,15 +68,6 @@
         }
     });
 
-    _$form.validate({
-        rules: {
-            Password: "required",
-            ConfirmPassword: {
-                equalTo: "#Password"
-            }
-        }
-    });
-
     _$form.find('.save-button').on('click', (e) => {
         e.preventDefault();
 
@@ -85,15 +76,6 @@
         }
 
         var team = _$form.serializeFormToObject();
-        team.roleNames = [];
-        var _$roleCheckboxes = _$form[0].querySelectorAll("input[name='role']:checked");
-        if (_$roleCheckboxes) {
-            for (var roleIndex = 0; roleIndex < _$roleCheckboxes.length; roleIndex++) {
-                var _$roleCheckbox = $(_$roleCheckboxes[roleIndex]);
-                team.roleNames.push(_$roleCheckbox.val());
-            }
-        }
-
         abp.ui.setBusy(_$modal);
         _teamService.create(team).done(function () {
             _$modal.modal('hide');
@@ -145,10 +127,6 @@
             error: function (e) { console.error('on team edit', e); }
         });
     });
-
-    //$(document).on('click', 'a[data-target="#TeamCreateModal"]', (e) => {
-    //    $('.nav-tabs a[href="#team-details"]').tab('show')
-    //});
 
     abp.event.on('team.edited', (data) => {
         _$teamsTable.ajax.reload();
