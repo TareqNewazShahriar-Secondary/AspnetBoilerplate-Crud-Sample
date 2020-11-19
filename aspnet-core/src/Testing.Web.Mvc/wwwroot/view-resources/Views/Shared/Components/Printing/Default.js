@@ -1,4 +1,4 @@
-﻿(function ($) {
+﻿(function ($, jsPDF) {
     let openerButton = $('button#print-modal-opener');
     if (openerButton.length) {
         openerButton.click(function () {
@@ -14,6 +14,15 @@
                         window.print();
                         $('#PrintModal').modal('hide');
                     });
+
+                    modal.find('button#export-to-pdf').off().on('click', function () {
+                        let doc = new jsPDF({
+                            unit: 'px',
+                            format: 'a4'
+                        });
+                        doc.fromHTML(modal.find('.modal-body').html());
+                        doc.save('test.pdf');
+                    });
                 },
                 error: function (e) {
                     console.error('on print component', e);
@@ -21,6 +30,4 @@
             });
         });
     }
-
-
-})(jQuery);
+})(jQuery, jsPDF);

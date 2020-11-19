@@ -194,13 +194,7 @@
         {
             "library": "push.js@1.0.9",
             "destination": "wwwroot/libs/push.js"
-        },
-        //other libs end
-
-        // jsPDF
-        {
-            "library": "jspdf@2.1.1",
-            "destination": "wwwroot/libs/jspdf"
         }
+        //other libs end
     ]
 }
