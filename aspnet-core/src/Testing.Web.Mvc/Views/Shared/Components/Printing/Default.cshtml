@@ -3,7 +3,7 @@
 @inject Testing.Web.Resources.IWebResourceManager WebResourceManager
 
 <div>
-    <button id="print-dialog-opener" type="button" class="btn btn-sm bg-secondary" data-toggle="modal" data-target="#PrintModal">
+    <button id="print-modal-opener" type="button" class="btn btn-sm bg-secondary" data-toggle="modal" data-target="#PrintModal">
         <i class="fas fa-pencil-alt"></i>
         @Model.PrintButtonText
     </button>
@@ -16,6 +16,7 @@
                 <div class="modal-body">
                 </div>
                 <div class="modal-footer">
+                    <button id="export-to-pdf">Export to PDF</button>
                     <button id="print">Print</button>
                 </div>
             </div>
@@ -25,9 +26,9 @@
 </div>
 
 @{
-    WebResourceManager.AddScript(ApplicationPath + "view-resources/Views/Shared/Components/Printing/Default.js");
+    WebResourceManager.AddScript(ApplicationPath + "libs/jspdf/jspdf.es.min.js");
+    WebResourceManager.AddScript(ApplicationPath + "view-resources/Views/Shared/Components/Printing/Default.js", true);
 }
-
 
 <style type="text/css">
     @@media print {

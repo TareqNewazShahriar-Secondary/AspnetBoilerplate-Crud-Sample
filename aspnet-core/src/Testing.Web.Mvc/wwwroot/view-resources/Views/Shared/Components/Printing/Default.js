@@ -1,5 +1,5 @@
 ﻿(function ($) {
-    let openerButton = $('button#print-dialog-opener');
+    let openerButton = $('button#print-modal-opener');
     if (openerButton.length) {
         openerButton.click(function () {
             abp.ajax({
@@ -21,4 +21,6 @@
             });
         });
     }
+
+
 })(jQuery);
