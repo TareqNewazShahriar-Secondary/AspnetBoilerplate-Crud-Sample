@@ -1,92 +1,140 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Testing
 {
-    public class GenerateExcel
+    public class GenerateExcel<T> where T : class
     {
-        string[] headerColumns = new string[] { "A", "B", "C" };
+        private List<PropertyInfo> _propList;
+        private IEnumerable<T> _data;
 
-        public void f()
+        public GenerateExcel(IEnumerable<T> data)
         {
-            //Make a copy of the template file
-            File.Copy("template.xlsx", "generated.xlsx", true);
+            _data = data;
 
-            SheetData sheetData;
+            var type = typeof(T);
+            // take only native and public proeperties
+            _propList = type.GetProperties(BindingFlags.Public | BindingFlags.Instance /*| BindingFlags.DeclaredOnly*/).ToList();
+        }
+
+        public MemoryStream Gererate()
+        {
+            var memoryStream = new MemoryStream();
 
             //Open up the copied template workbook
-            using (SpreadsheetDocument myWorkbook = SpreadsheetDocument.Open("generated.xlsx", true))
+            using (var spreadsheetDocument = SpreadsheetDocument.Create(memoryStream, SpreadsheetDocumentType.Workbook))
             {
-                //Access the main Workbook part, which contains all references
-                WorkbookPart workbookPart = myWorkbook.WorkbookPart;
+                // Add a WorkbookPart to the document.
+                WorkbookPart workbookpart = spreadsheetDocument.AddWorkbookPart();
+                workbookpart.Workbook = new Workbook();
 
-                //Grab the first worksheet
-                WorksheetPart worksheetPart = workbookPart.WorksheetParts.First();
+                // Add a WorksheetPart to the WorkbookPart.
+                WorksheetPart worksheetPart = workbookpart.AddNewPart<WorksheetPart>();
+                worksheetPart.Worksheet = new Worksheet(new SheetData());
 
-                //SheetData will contain all the data
-                sheetData = worksheetPart.Worksheet.GetFirstChild<SheetData>();
+                // Add Sheets to the Workbook and append the previous sheet
+                Sheets sheets = spreadsheetDocument.WorkbookPart.Workbook.AppendChild(new Sheets());
+                // Append a new worksheet and associate it with the workbook.
+                Sheet sheet = new Sheet()
+                {
+                    Id = spreadsheetDocument.WorkbookPart.GetIdOfPart(worksheetPart),
+                    SheetId = 1,
+                    Name = "Sheet1"
+                };
+                sheets.Append(sheet);
+
+                // Get the sheetData cell table.
+                SheetData sheetData = worksheetPart.Worksheet.GetFirstChild<SheetData>();
+
+                AddAllRows(ref sheetData);
             }
 
-            //My data starts at row 2
-            for(int index = 2; index < 50; index++)
-            {   
-                //Add a new row
-                Row contentRow = CreateContentRow(index, DateTime.Now.ToShortTimeString(), index * 50, index * 100);
+            //reset the position to the start of the stream
+            memoryStream.Seek(0, SeekOrigin.Begin);
 
-                //Append new row to sheet data
-                sheetData.AppendChild(contentRow);
+            return memoryStream;
+        }
+
+        private void AddAllRows(ref SheetData sheetData)
+        {
+            int rowCount = 1;
+
+            // Add header
+            var headerRow = CreateContentRow(rowCount++, _propList.Select(x => (object)x.Name).ToList());
+            sheetData.Append(headerRow);
+
+            foreach (var item in _data)
+            {
+                var values = GetValues(item);
+                var row = CreateContentRow(rowCount++, values);
+                sheetData.Append(row);
             }
         }
 
-        public Row CreateContentRow(int index, string territory, decimal salesLastYear, decimal salesThisYear)
+        private Row CreateContentRow(int index, List<object> values)
         {
             //Create new row
-            Row r = new Row();
-            r.RowIndex = (UInt32)index;
-
-            //First cell is a text cell, so create it and append it
-            Cell firstCell = CreateTextCell(headerColumns[0], territory, index);
-            r.AppendChild(firstCell);
+            Row row = new Row();
+            row.RowIndex = (UInt32)index;
 
             //Create cells that contain data
-            for (int i = 1; i < headerColumns.Length; i++)
+            int i = 0;
+            foreach (var value in values)
             {
-                Cell c = new Cell();
-                c.CellReference = headerColumns[i] + index;
-                CellValue v = new CellValue();
-
-                if (i == 1)
-                    v.Text = salesLastYear.ToString();
+                Cell cell = new Cell();
+                cell.CellReference = char.ConvertFromUtf32(65 + i) + (i + 1);
+                var valueType = value.GetType();
+                if (valueType == typeof(int) || valueType == typeof(decimal))
+                {
+                    cell.AppendChild(new CellValue(value.ToString()));
+                }
+                //else if(valueType == typeof(DateTimeOffset) || valueType == typeof(DateTimeOffset))
+                //{
+                //    //broadly supported - earliest Excel numeric date 01/01/1900
+                //    var date = valueType == typeof(DateTimeOffset) ? ((DateTimeOffset)value).DateTime : (DateTime)value;
+                //    double oaValue = date.ToOADate();
+                //    cell.CellValue = new CellValue(oaValue.ToString(CultureInfo.InvariantCulture));
+                //    cell.DataType = new EnumValue<CellValues>(CellValues.Number);
+                //    cell.StyleIndex = Convert.ToUInt32(_numericDateCellFormatIndex);
+                //}
                 else
-                    v.Text = salesThisYear.ToString();
-
-                c.AppendChild(v);
-                r.AppendChild(c);
+                {
+                    cell.DataType = CellValues.InlineString;
+                    cell.AppendChild(new InlineString(new Text(value.ToString())));
+                }
+                row.AppendChild(cell);
             }
 
-            return r;
+            return row;
         }
 
-        private Cell CreateTextCell(string header, string text, int index)
-        {
-            //Create new inline string cell
-            Cell c = new Cell();
-            c.DataType = CellValues.InlineString;
-            c.CellReference = header + index;
+        private List<object> GetValues(T obj)
+        {   
+            object val = null;
+            var valueList = new List<object>();
+            // get values from the model
+            foreach (var s in _propList)
+            {
+                try
+                {
+                    val = s.GetValue(obj) ?? DBNull.Value;
+                }
+                catch
+                {
+                    val = DBNull.Value;
+                }
 
-            //Add text to text cell
-            InlineString inlineString = new InlineString();
-            Text t = new Text();
+                valueList.Add(val);
+            }
 
-            t.Text = text;
-            inlineString.AppendChild(t);
-            c.AppendChild(inlineString);
-
-            return c;
+            return valueList;
         }
     }
 }
