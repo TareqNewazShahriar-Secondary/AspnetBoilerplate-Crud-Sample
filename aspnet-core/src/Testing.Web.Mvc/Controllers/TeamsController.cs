@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Testing.Controllers;
 using Testing.Teams;
+using Testing.Teams.Dto;
 using Testing.Web.Models.Teams;
 
 namespace Testing.Web.Controllers
@@ -36,6 +37,17 @@ namespace Testing.Web.Controllers
         {
             var teams = await _teamService.GetAllAsync(new Teams.Dto.PagedTeamResultRequestDto { MaxResultCount = int.MaxValue });
             return PartialView("_PrintList", teams.Items.ToList());
+        }
+
+        public async Task<IActionResult> GenerateExcel()
+        {
+            var input = new PagedTeamResultRequestDto { SkipCount = 0, MaxResultCount = int.MaxValue };
+            var genExcel = new GenerateExcel<TeamDto>((await _teamService.GetAllAsync(input)).Items);
+            var stream = genExcel.Gererate();
+
+            var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            var fileName = "TeamsList.xlsx";
+            return File(stream, contentType, fileName);
         }
     }
 }
