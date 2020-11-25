@@ -9,6 +9,7 @@ namespace Testing.Web.Views.Shared.Components.Printing
     {
         public string Controller { get; set; }
         public string Action { get; set; }
+        public string ExcelAction { get; set; }
         public dynamic ActionParam { get; set; }
         public string PrintButtonText { get; set; }
     }

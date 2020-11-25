@@ -12,9 +12,15 @@ namespace Testing.Web.Views.Shared.Components.Printing
 
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(string controller, string action, string printButtonText)
+        public async Task<IViewComponentResult> InvokeAsync(string controller, string action, string excelAction, string printButtonText)
         {
-            var model = new PrintingViewModel { Controller = controller, Action = action, PrintButtonText = printButtonText };
+            var model = new PrintingViewModel 
+            { 
+                Controller = controller, 
+                Action = action, 
+                ExcelAction = excelAction,
+                PrintButtonText = printButtonText 
+            };
             return View(model);
         }
     }

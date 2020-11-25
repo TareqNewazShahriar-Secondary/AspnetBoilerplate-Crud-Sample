@@ -15,7 +15,11 @@
                         $('#PrintModal').modal('hide');
                     });
 
-                    modal.find('button#export-to-pdf').off().on('click', function () {
+                    modal.find('button#download-excel').off().on('click', function () {
+                        window.location.href = modal.find('#excel-url').val();
+                    });
+
+                    modal.find('button#download-pdf').off().on('click', function () {
                         let doc = new jsPDF({
                             unit: 'px',
                             format: 'a4'

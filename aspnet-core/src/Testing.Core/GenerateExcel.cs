@@ -20,8 +20,13 @@ namespace Testing
             _data = data;
 
             var type = typeof(T);
-            // take only native and public proeperties
-            _propList = type.GetProperties(BindingFlags.Public | BindingFlags.Instance /*| BindingFlags.DeclaredOnly*/).ToList();
+            // Take only 1st level properties; no inherited properties will not be taken
+            _propList = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
+
+            // Take inherited propperties and add first
+            var props = type.GetProperties(BindingFlags.Public | BindingFlags.Instance).ToList();
+            props.RemoveAll(x => _propList.Contains(x)); // keep only base class props
+            _propList.InsertRange(0, props);
         }
 
         public MemoryStream Gererate()

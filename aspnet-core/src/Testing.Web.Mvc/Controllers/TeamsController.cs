@@ -46,7 +46,8 @@ namespace Testing.Web.Controllers
             var stream = genExcel.Gererate();
 
             var contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            var fileName = "TeamsList.xlsx";
+            var fileName = "TeamList.xlsx";
+            
             return File(stream, contentType, fileName);
         }
     }
